@@ -1,5 +1,7 @@
 package com.debbache.calculator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -10,10 +12,10 @@ public class StringCalculator {
             .map(s -> s.replaceFirst(".*//(.*?)\n.*", "$1"))
             .orElse("(,|\n)");
 
-    private static final IntConsumer NEGATIVE_NUMBER_CHECKER = number -> Optional.of(number).filter(n -> n >= 0).orElseThrow(() -> new IllegalArgumentException("negatives not allowed"));
-
     public static int add(String numbers) {
-        return Optional.ofNullable(numbers)
+        List<Integer> negativeNumbers = new ArrayList<>();
+
+        var sum = Optional.ofNullable(numbers)
                 .filter(number -> !number.isEmpty())
                 .stream()
                 .map(number -> number.split(DELIMITER.apply(numbers)))
@@ -21,8 +23,23 @@ public class StringCalculator {
                 .map(String::trim)
                 .filter(s -> s.matches("(-?[0-9]*)"))
                 .mapToInt(Integer::valueOf)
-                .peek(NEGATIVE_NUMBER_CHECKER)
+                .peek(n -> cacheNegativeNumbers(negativeNumbers, n))
                 .sum();
+
+        checkForNegativeNumbers(negativeNumbers);
+        return sum;
+    }
+
+    private static void cacheNegativeNumbers(List<Integer> negativeNumbers, int number) {
+        if (number < 0) {
+            negativeNumbers.add(number);
+        }
+    }
+
+    private static void checkForNegativeNumbers(List<Integer> negativeNumbers) {
+        if (!negativeNumbers.isEmpty()) {
+            throw new IllegalArgumentException(String.format("negatives not allowed %s", negativeNumbers));
+        }
     }
 
 }

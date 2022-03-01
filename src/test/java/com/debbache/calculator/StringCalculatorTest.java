@@ -83,7 +83,17 @@ class StringCalculatorTest {
         //Then
         Assertions.assertThatThrownBy(() -> StringCalculator.add(numbers))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("negatives not allowed");
+                .hasMessage("negatives not allowed [-3]");
+    }
+
+    @Test
+    public void string_calculator_should_show_all_negative_numbers_in_thrown_exception_if_numbers_contains_several_negative_numbers(){
+        //Given
+        String numbers = "1,2,-3,-5,-1000";
+        //Then
+        Assertions.assertThatThrownBy(() -> StringCalculator.add(numbers))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("negatives not allowed [-3, -5, -1000]");
     }
 
 }
