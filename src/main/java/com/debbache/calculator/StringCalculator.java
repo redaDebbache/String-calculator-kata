@@ -13,7 +13,7 @@ public class StringCalculator {
             .orElse("(,|\n)");
 
     public static int add(String numbers) {
-        List<Integer> negativeNumbers = new ArrayList<>();
+        var negativeNumbers = new ArrayList<Integer>();
 
         var sum = Optional.ofNullable(numbers)
                 .filter(number -> !number.isEmpty())
